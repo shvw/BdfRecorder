@@ -11,7 +11,6 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 public class BdfRecorderService extends Service {
 
@@ -25,15 +24,9 @@ public class BdfRecorderService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(LOG_TAG,"onStartCommand");
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
             createNotificationAndStartForeground(intent);
         }
-        /*if (intent.getAction().equals(Constants.ACTION.STOPFOREGROUND_ACTION)) {
-            Log.i(LOG_TAG, "Received Stop Foreground Intent");
-            stopForeground(true);
-            stopSelf();
-        }*/
         return Service.START_STICKY;
     }
 
@@ -63,7 +56,6 @@ public class BdfRecorderService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(LOG_TAG, "In onDestroy");
     }
 
     @Override
@@ -75,10 +67,6 @@ public class BdfRecorderService extends Service {
         BdfRecorderService getService() {
             return BdfRecorderService.this;
         }
-    }
-
-    public String getTraliVali(){
-        return "tralivali";
     }
 
 }

@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,15 +36,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public void onExitButtonClick(View view){
-
         TextView textView = findViewById(R.id.textView);
-        textView.setText(bdfRecorderService.getTraliVali());
+        textView.setText("exit");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("MainActivity","onResume");
         Intent startIntent= new Intent(this, BdfRecorderService.class);
         //startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
         bindService(startIntent, this, Context.BIND_AUTO_CREATE);
@@ -54,20 +51,17 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e("MainActivity","onPause");
         unbindService(this);
     }
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
-        Log.e("MainActivity","onServiceConnected");
         BdfRecorderService.ServiceBinder b = (BdfRecorderService.ServiceBinder) binder;
         bdfRecorderService = b.getService();
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Log.e("MainActivity","onServiceDisconnected");
         bdfRecorderService = null;
     }
 }
