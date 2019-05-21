@@ -11,22 +11,31 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
+import java.io.IOException;
 
 public class BdfRecorderService extends Service {
 
     private static final String LOG_TAG = "BdfRecorderService";
+    public static final String NOTIFICATION_TEXT = "recording...";
+    private static final String TAG = "BdfRecorderService";
     private final IBinder mBinder = new ServiceBinder();
+    private final SerialSocket serialSocket= new SerialSocket();
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.e(TAG, "onCreate");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e(TAG, "onStartCommand");
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
             createNotificationAndStartForeground(intent);
         }
+        connect();
         return Service.START_STICKY;
     }
 
@@ -46,7 +55,7 @@ public class BdfRecorderService extends Service {
                     .setSmallIcon(R.drawable.ic_notification)
                     .setColor(getResources().getColor(R.color.colorPrimary))
                     .setContentTitle(getResources().getString(R.string.app_name))
-                    .setContentText("notification text")
+                    .setContentText(NOTIFICATION_TEXT)
                     .setContentIntent(restartPendingIntent)
                     .setOngoing(true);
             Notification notification = builder.build();
@@ -55,7 +64,7 @@ public class BdfRecorderService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+         super.onDestroy();
     }
 
     @Override
@@ -66,6 +75,26 @@ public class BdfRecorderService extends Service {
     public class ServiceBinder extends Binder {
         BdfRecorderService getService() {
             return BdfRecorderService.this;
+        }
+    }
+
+    public void connect(){
+        try {
+            serialSocket.connect(new LogSerialListener());
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    public void disconnect(){
+        serialSocket.disconnect();
+    }
+
+    public void write(byte[] data){
+        try {
+            serialSocket.write(data);
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
         }
     }
 

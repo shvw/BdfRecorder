@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public void onStopButtonClick(View view){
+        bdfRecorderService.disconnect();
         bdfRecorderService.stopForeground(true);
         bdfRecorderService.stopSelf();
         TextView textView = findViewById(R.id.textView);
@@ -49,6 +50,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public void onExitButtonClick(View view){
+        byte[] data = {0x20,(byte)0xF0,0x11,(byte)0xF1,0x01,0x0A,0x02,(byte)0xA3,0x10,0x65,
+                (byte)0xE1,0x20,0x00,0x40,0x02,0x01,(byte)0xF2,0x0A,0x00,(byte)0xF3,0x00,
+                (byte)0xF4,0x01,(byte)0xF5,0x00,(byte)0xF6,0x00,(byte)0xF0,0x10,(byte)0xFE,
+                0x55,0x55};
+        bdfRecorderService.write(data);
         TextView textView = findViewById(R.id.textView);
         textView.setText("exit");
     }
