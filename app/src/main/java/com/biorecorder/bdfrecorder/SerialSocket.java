@@ -21,11 +21,12 @@ class SerialSocket implements Runnable {
     private BluetoothSocket socket;
     private boolean connected;
 
-    void  connect(SerialListener listener) throws IOException {
+    void  connect(SerialListener listener, boolean isAutoReconnect) throws IOException {
         if(connected || socket != null) {
             throw new IOException("already connected");
         }
         this.listener = listener;
+        this.isAutoReconnect = isAutoReconnect;
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()){
             if (device.getType() != BluetoothDevice.DEVICE_TYPE_LE) {

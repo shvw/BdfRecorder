@@ -80,7 +80,7 @@ public class BdfRecorderService extends Service {
 
     public void connect(){
         try {
-            serialSocket.connect(new LogSerialListener());
+            serialSocket.connect(new LogSerialListener(), true);
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
