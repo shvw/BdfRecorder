@@ -35,12 +35,19 @@
                 android:text="Stop" />
 
             <Button
-                android:id="@+id/exitButton"
+                android:id="@+id/recButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="onExitButtonClick"
-                android:text="Exit" />
+                android:onClick="onRecButtonClick"
+                android:text="Rec" />
+            <Button
+                android:id="@+id/stopRec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onStopRecClick"
+                android:text="StopRec" />
         </LinearLayout>
 
 

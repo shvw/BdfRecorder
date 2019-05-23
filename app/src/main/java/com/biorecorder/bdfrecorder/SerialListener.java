@@ -1,6 +1,6 @@
 package com.biorecorder.bdfrecorder;
 
-interface SerialListener {
+public interface SerialListener {
     void onSerialConnect      ();
     void onSerialRead         (byte[] data);
     void onSeriaDisconnect    (Exception e);

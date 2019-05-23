@@ -1,16 +1,14 @@
 package com.biorecorder.bdfrecorder.ads;
 
 
-class FrameDecoder {
+import com.biorecorder.bdfrecorder.SerialListener;
+
+public class FrameDecoder implements SerialListener {
     private static final String LOG = "FrameDecoder";
     private static final byte START_FRAME_MARKER = (byte) (0xAA & 0xFF);
     private static final byte MESSAGE_MARKER = (byte) (0xA5 & 0xFF);
     private static final byte STOP_FRAME_MARKER = (byte) (0x55 & 0xFF);
     private int MAX_MESSAGE_SIZE = 7;
-    /*******************************************************************
-     * these fields we need to restore  data records numbers
-     *  from short (sent by ads in 2 bytes) to int
-     *******************************************************************/
     private static int SHORT_MAX = 65535; // max value of unsigned short
     private int durationOfShortBlockMs;
     private int previousRecordShortNumber = -1;
@@ -26,9 +24,9 @@ class FrameDecoder {
     private int decodedFrameSizeInInt;
     private byte[] rawFrame;
     private int[] accPrev = new int[3];
-    private DataRecordListener dataListener;
+    private DataRecordListener dataListener = new SaveToFileSerialListener();
 
-    FrameDecoder() {
+    public FrameDecoder() {
         durationOfShortBlockMs = 1310700;
         numberOf3ByteSamples = 1;
         rowFrameSizeInByte = 16;
@@ -36,15 +34,6 @@ class FrameDecoder {
         rawFrame = new byte[Math.max(rowFrameSizeInByte, MAX_MESSAGE_SIZE)];
     }
 
-    /**
-     * Frame decoder permits to add only ONE DataListener! So if a new listener added
-     * the old one are automatically removed
-     */
-    public void addDataListener(DataRecordListener l) {
-        if (l != null) {
-            dataListener = l;
-        }
-    }
 
     public void onByteReceived(byte inByte) {
         if (frameIndex == 0 && inByte == START_FRAME_MARKER) {
@@ -218,5 +207,22 @@ class FrameDecoder {
     }
     private static String byteToHexString(byte b) {
         return String.format("%02X ", b);
+    }
+
+    @Override
+    public void onSerialConnect() {
+        //do nothing
+    }
+
+    @Override
+    public void onSerialRead(byte[] data) {
+        for (int i = 0; i < data.length; i++) {
+            onByteReceived(data[i]);
+        }
+    }
+
+    @Override
+    public void onSeriaDisconnect(Exception e) {
+        dataListener.onStopRecording();
     }
 }

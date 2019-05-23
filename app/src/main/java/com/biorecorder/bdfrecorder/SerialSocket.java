@@ -53,6 +53,10 @@ class SerialSocket implements Runnable {
         }
     }
 
+    public synchronized void listenerClose(){
+        listener.onSeriaDisconnect(null);
+    }
+
     void write(byte[] data) throws IOException {
         if (!connected) {
             throw new IOException("not connected");
@@ -83,7 +87,7 @@ class SerialSocket implements Runnable {
                 connected = false;
                 Log.e(TAG, "Disconnected", e);
                 if (listener != null) {
-                    listener.onSeriaDisconnect(e);
+                   // listener.onSeriaDisconnect(e);
                 }
             try {
                 socket.close();

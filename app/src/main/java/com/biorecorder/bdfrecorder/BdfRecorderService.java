@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import com.biorecorder.bdfrecorder.ads.FrameDecoder;
 
 import java.io.IOException;
 
@@ -80,7 +81,7 @@ public class BdfRecorderService extends Service {
 
     public void connect(){
         try {
-            serialSocket.connect(new LogSerialListener(), true);
+            serialSocket.connect(new FrameDecoder(), true);
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -88,6 +89,10 @@ public class BdfRecorderService extends Service {
 
     public void disconnect(){
         serialSocket.disconnect();
+    }
+
+    public void socketListenerClose(){
+        serialSocket.listenerClose();
     }
 
     public void write(byte[] data){
